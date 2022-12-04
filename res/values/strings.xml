@@ -1,0 +1,113 @@
+<resources>
+    <string name="app_name">Mines</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Board size choosing stuff -->
+    <string name="bombs">Bombs</string>
+    <string name="height">Height</string>
+    <string name="width">Width</string>
+    <string name="custom_start">Go!</string>
+    <string name="start">Start %s</string>
+    <string name="small">Beginner</string>
+    <string name="medium">Intermediate</string>
+    <string name="big">Expert</string>
+    <string name="scoresbutton">Scores</string>
+
+    <!-- Displaying high scores -->
+    <string name="list_scores_score_title">Time</string>
+    <string name="list_scores_rank_title">Rank</string>
+    <string name="list_scores_user_title">Name</string>
+    <string name="list_scores_score_blank"/>
+    <string name="list_scores_user_blank"/>
+
+    <string name="save_score_dialog_labelText">Your name:</string>
+    <string name="save_score_dialog_message">New high score</string>
+    <string name="save_score_dialog_positiveButton">Save</string>
+    <string name="save_score_dialog_negativeButton">Cancel</string>
+
+    <string name="reset_scores_button">Reset Scores</string>
+    <string name="reset_scores_message">Reset all high scores? (Long press a board
+        size to reset just that category)</string>
+    <string name="reset_scores_positiveButton">Reset</string>
+    <string name="reset_scores_negativeButton">Cancel</string>
+    <string name="reset_single_score_message">Reset scores for board size %s?</string>
+    <string name="reset_single_score_positiveButton">Reset</string>
+    <string name="reset_single_score_negativeButton">Cancel</string>
+
+    <string name="zoom_button_dialog_message">Long press to set favorite zoom level</string>
+    <string name="zoom_button_dialog_positive">Ok</string>
+
+    <!-- continue game dialog -->
+    <string name="dialog_resumeGame_message">You have a game in progress.</string>
+    <string name="dialog_resumeGame_positive">Resume</string>
+    <string name="dialog_resumeGame_negative_newGame">New Game</string>
+    <string name="dialog_resumeGame_negative_nothing">No</string>
+
+    <!-- persistant data label formats -->
+    <string name="score_key">%s, Rank: %d</string>
+    <string name="score_sizes_key">scoresizes</string>
+    <string name="board_size">Bombs: %d, Size: %d x %d</string>
+    <string name="score_owner_key">scoreowner:%s</string>
+    <string name="zoom_level_key">zoomlevel:%s</string>
+
+    <string name="current_game_file">currentgame</string>
+    <string name="listOfGames_file">listofgames</string>
+    <string name="storeGame_message">Save current game</string>
+    <string name="storeGame_invalidMessage">Save current game (invalid name)</string>
+    <string name="storeGame_label">Name: </string>
+    <string name="storeGame_positive">Save</string>
+    <string name="storeGame_negative">Cancel</string>
+
+    <string name="dialog_storedGame_message">Saved games</string>
+    <string name="dialog_storedGame_deleteMessage">Long press a game to delete it, or long press
+        this message to delete all of them</string>
+    <string name="dialog_storedGame_noGames_message">There are no stored games</string>
+    <string name="dialog_storedGame_noGames_positive">Okay</string>
+    <string name="dialog_deleteGame_message">Delete game %s?</string>
+    <string name="dialog_deleteGame_positive">Yes</string>
+    <string name="dialog_deleteGame_negative">No</string>
+    <string name="dialog_deleteAllGames_message">Delete all games?</string>
+    <string name="dialog_deleteAllGames_positive">Yes</string>
+    <string name="dialog_deleteAllGames_negative">No</string>
+
+    <string name="newGame_message">New game?</string>
+    <string name="newGame_positive">Yes</string>
+    <string name="newGame_negative">No</string>
+
+    <string name="dialog_gameNotFound_message">Game not found</string>
+    <string name="dialog_gameNotFound_positive">Ok</string>
+
+    <!-- settings menu -->
+    <string name="settings_zoom">Allow zoom</string>
+    <string name="settings_longPressFlags">Long pressing a square toggles its flag</string>
+    <string name="settings_scrollSensitivity">Click sensitivity</string>
+    <string name="settings_useQuestionMark">Use question marks (long press flag button to toggle this setting)</string>
+    <string name="settings_fixedZoom">Favorite zoom level (Or: long press zoom button to set)</string>
+    <string name="settings_quickResetFace">Confirm new game when tapping the face (Long press for automatic new game)</string>
+    <string name="settings_storeGame">Save current game</string>
+    <string name="settings_viewStoredGames">View saved games</string>
+    <string name="settings_hintBomb">Hint shows squares to flag</string>
+    <string name="hint_decreaseScrollSensitivity">Decrease click sensitivity</string>
+    <string name="hint_increaseScrollSensitivity">Increase click sensitivity</string>
+    <string name="hint_increaseFixedZoom">Increase favorite zoom level</string>
+    <string name="hint_decreaseFixedZoom">Decrease favorite zoom level</string>
+    <string name="noHint_message">There are no knowable squares.</string>
+
+    <string name="settings_file">settings</string>
+
+    <string name="info_zoom">Long press to set a favorite zoom level.  Toggles between favorite zoom
+        level and  viewing the whole board</string>
+    <string name="info_hint">You can get a hint, or long press to see all knowable squares</string>
+    <string name="info_rulesBomb">Some squares are safe and some contain bombs.  If you click on a
+        bomb, you lose</string>
+    <string name="info_rulesSafe">If you click on a safe square, you\'ll learn how many bombs are
+    adjacent to it</string>
+    <string name="info_rulesWin">Find all the bombs by uncovering all of the safe squares to win
+    </string>
+    <string name="info_flag">Mark a square as a bomb with a flag either by long pressing (if
+        enabled in settings) it or with the flag button</string>
+    <string name="info_questionMark">If you\'re unsure about a square, you can mark it with a
+    question mark by flagging it again. A third time removes the flag altogether</string>
+    <string name="info_questionMarkSettings">Or turn off question marks in settings
+    </string>
+</resources>
