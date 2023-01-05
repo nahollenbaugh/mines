@@ -1,6 +1,7 @@
 package com.nahollenbaugh.mines.main;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,11 +55,12 @@ import java.util.Set;
 public class GameFragment extends Fragment implements GameWatcher, SettingsManager {
 
     FragmentGameBinding binding;
-    protected boolean questionMarkMode = true;
-    protected boolean allowingZoom = true;
-    protected boolean longPressFlags = true;
-    protected boolean confirmResetFace = true;
-    protected boolean hintBomb = true;
+    protected boolean noguessMode = SettingsManager.NOGUESS_MODE_DEFAULT;
+    protected boolean questionMarkMode = SettingsManager.QUESTION_MARK_MODE_DEFAULT;
+    protected boolean allowingZoom = SettingsManager.ZOOM_MODE_DEFAULT;
+    protected boolean longPressFlags = SettingsManager.LONG_PRESS_FOR_FLAGS_MODE_DEFAULT;
+    protected boolean confirmResetFace = SettingsManager.CONFIRM_RESET_FACE_DEFAULT;
+    protected boolean hintBomb = SettingsManager.HINT_BOMB_MODE_DEFAULT;
     public float fixedZoom = 0;
     protected boolean resumingGame;
 
@@ -94,11 +96,13 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         if (ctxt == null) {
             throw new RuntimeException();
         }
+        binding.gameView.gameFragment = this;
+        StoreSettings.read(requireContext(), this);
 
         String gameName = GameFragmentArgs.fromBundle(getArguments()).getGameName();
-        if (gameName != null){
+        if (gameName != null && !gameName.equals("")){
             StoreGame storeGame;
-            if (gameName == getResources().getString(R.string.current_game_file)) {
+            if (gameName.equals(getResources().getString(R.string.current_game_file))) {
                 storeGame = new StoreGame(requireContext());
             } else {
                 storeGame = new StoreGame(requireContext(), gameName);
@@ -125,6 +129,7 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
                     GameFragmentArgs.fromBundle(getArguments()).getNumbombs(),
                     GameFragmentArgs.fromBundle(getArguments()).getHeight(),
                     GameFragmentArgs.fromBundle(getArguments()).getWidth());
+            binding.gameView.reset();
         }
 
         binding.buttonIngameRestart.setDrawImage(new DrawResetFace(
@@ -210,10 +215,12 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         binding.buttonSettings.setDrawImage(new DrawSettings(
                 ContextCompat.getColor(ctxt, R.color.dark),
                 ContextCompat.getColor(ctxt, R.color.transparent)));
-        binding.buttonSettings.setOnClickListener(v ->
-                new SettingsDialog(this, this).show(true, true,
-                        true, true, true, true,
-                        true, true, false));
+        binding.buttonSettings.setOnClickListener(v -> {
+                    new SettingsDialog(this, this).show(true,
+                            true, true,
+                            true, true, true, true,
+                            true, true, false);
+                });
 
         binding.buttonBack.setDrawImage(new DrawBack(
                 ContextCompat.getColor(ctxt, R.color.dark)));
@@ -329,12 +336,20 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         StoreSettings.read(requireContext(), this);
     }
 
+    public boolean isNoguessMode() {
+        return noguessMode;
+    }
+    public void toggleNoguessMode() {
+        noguessMode = !noguessMode;
+//        new BasicDialog(requireContext().getString(R.string.newGame_message),
+//                requireContext().getString(R.string.newGame_positive),
+//                requireContext().getString(R.string.newGame_negative),
+//                (dialogInterface,i) -> resetGame(),
+//                (dialogInterface,i) -> {},
+//                this).show();
+    }
     public void toggleQuestionMarkMode() {
         questionMarkMode = !questionMarkMode;
-        SharedPreferences.Editor editor = ((FragmentActivity) requireContext())
-                .getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putBoolean(StoredDataStrings.questionMarkModeKey, questionMarkMode);
-        editor.apply();
     }
     public boolean isQuestionMarkMode() {
         return questionMarkMode;
@@ -346,32 +361,18 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         } else {
             binding.gameView.turnZoomOff();
         }
-        SharedPreferences.Editor editor = ((FragmentActivity) requireContext())
-                .getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putBoolean(StoredDataStrings.zoomModeKey, allowingZoom);
-        editor.apply();
-
     }
     public boolean isZoomMode() {
         return allowingZoom;
     }
     public void toggleLongPressForFlagMode() {
         longPressFlags = !longPressFlags;
-        SharedPreferences.Editor editor = ((FragmentActivity) requireContext())
-                .getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putBoolean(StoredDataStrings.longPressFlagsModeKey, longPressFlags);
-        editor.apply();
     }
     public boolean isLongPressFlagsMode() {
         return longPressFlags;
     }
     public void setSmallScrollSensitivity(float sensitivity) {
         binding.gameView.setSmallScrollSensitivity(sensitivity);
-        SharedPreferences.Editor editor = ((FragmentActivity) requireContext())
-                .getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putFloat(StoredDataStrings.smallScrollSensitivityKey, sensitivity);
-        editor.apply();
-
     }
     public float getSmallScrollSensitivity() {
         return binding.gameView.getSmallScrollSensitivity();
@@ -479,7 +480,7 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         }
         HintGame hg = new HintGame(g.getBombs(), g.getFlags(), g.getUncovereds(),
                 g.getQuestionMarks());
-        Solver.play(hg, new boolean[g.getWidth()][g.getHeight()]);
+        Solver.play(hg);
         hints = hg.hints;
     }
     protected void displayNoHints(){
@@ -557,7 +558,6 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         return workingScoreSaver != null;
     }
     public void addSaveScoreButton(){
-        Log.println(Log.ERROR,"","GameFragment.java add save score buttton");
         if (binding.buttonSaveScore.getVisibility() != View.INVISIBLE){
             return;
         }

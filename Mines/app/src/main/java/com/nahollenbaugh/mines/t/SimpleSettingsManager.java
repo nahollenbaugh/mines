@@ -14,12 +14,21 @@ public class SimpleSettingsManager implements SettingsManager{
     }
     protected Context ctxt;
     protected boolean isReading;
-    protected boolean isQuestionMarkMode;
-    protected boolean isZoomMode;
-    protected boolean isLongPressFlagsMode;
+    protected boolean isNoguessMode = NOGUESS_MODE_DEFAULT;
+    protected boolean isQuestionMarkMode = QUESTION_MARK_MODE_DEFAULT;
+    protected boolean isZoomMode = ZOOM_MODE_DEFAULT;
+    protected boolean isLongPressFlagsMode = LONG_PRESS_FOR_FLAGS_MODE_DEFAULT;
     protected float smallScrollSensitivity;
-    protected boolean isConfirmResetFace;
-    protected boolean isHintBombMode;
+    protected boolean isConfirmResetFace = CONFIRM_RESET_FACE_DEFAULT;
+    protected boolean isHintBombMode = HINT_BOMB_MODE_DEFAULT;
+
+    public void toggleNoguessMode(){
+        isNoguessMode = !isNoguessMode();
+        write();
+    }
+    public boolean isNoguessMode(){
+        return isNoguessMode;
+    }
 
     public void toggleQuestionMarkMode(){
         isQuestionMarkMode = !isQuestionMarkMode;

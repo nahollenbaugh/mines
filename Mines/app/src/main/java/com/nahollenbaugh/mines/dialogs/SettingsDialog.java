@@ -3,6 +3,7 @@ package com.nahollenbaugh.mines.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.nahollenbaugh.mines.drawing.DrawNumberUtil;
 import com.nahollenbaugh.mines.drawing.DrawPlus;
 import com.nahollenbaugh.mines.drawing.DrawQuestionMark;
 import com.nahollenbaugh.mines.drawing.DrawResetFace;
+import com.nahollenbaugh.mines.drawing.DrawShovel;
 import com.nahollenbaugh.mines.drawing.DrawSmall;
 import com.nahollenbaugh.mines.drawing.DrawZoom;
 import com.nahollenbaugh.mines.t.SettingsManager;
@@ -43,6 +45,7 @@ public class SettingsDialog extends DialogFragment {
         this.s = s;
     }
 
+    boolean noguess;
     boolean allowZoom;
     boolean longPressFlags;
     boolean useQuestionMarks;
@@ -53,9 +56,11 @@ public class SettingsDialog extends DialogFragment {
     boolean scrollSensitivity;
     boolean hintBomb;
 
-    public void show(boolean allowZoom, boolean longPressFlags, boolean useQuestionMarks,
+    public void show(boolean noguess,
+                     boolean allowZoom, boolean longPressFlags, boolean useQuestionMarks,
                      boolean fixedZoomLevel, boolean resetFace, boolean storeGame,
                      boolean viewStoredGames, boolean hintBomb, boolean scrollSensitivity){
+        this.noguess = noguess;
         this.allowZoom = allowZoom;
         this.longPressFlags = longPressFlags;
         this.useQuestionMarks = useQuestionMarks;
@@ -79,6 +84,13 @@ public class SettingsDialog extends DialogFragment {
 
         int crossOutColor = ContextCompat.getColor(ctxt, R.color.settings_crossout);
         int dark = ContextCompat.getColor(ctxt, R.color.dark);
+        if (noguess) {
+            grid.addItem(new DrawShovel(dark),
+                    crossOutColor,
+                    s.isNoguessMode(),
+                    getResources().getString(R.string.settings_noguess),
+                    v -> s.toggleNoguessMode());
+        }
         if (allowZoom) {
             grid.addItem(
                     new DrawZoom(ContextCompat.getColor(ctxt, R.color.zoom),
@@ -198,5 +210,10 @@ public class SettingsDialog extends DialogFragment {
         }
 
         return dialog;
+    }
+
+    public void onDismiss(DialogInterface dialogInterface){
+        super.onDismiss(dialogInterface);
+
     }
 }

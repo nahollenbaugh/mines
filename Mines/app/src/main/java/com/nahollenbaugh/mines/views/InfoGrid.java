@@ -77,7 +77,7 @@ public class InfoGrid extends GridLayout {
         item.endSpace.setLayoutParams(params);
 
         addView(item.image);
-        params = (GridLayout.LayoutParams) item.image.getLayoutParams();
+        params = (LayoutParams) item.image.getLayoutParams();
         params.rowSpec = GridLayout.spec(rows.size() + 1, 1);
         params.columnSpec = GridLayout.spec(1, 1);
         params.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);

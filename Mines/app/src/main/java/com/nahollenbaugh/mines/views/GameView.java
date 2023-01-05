@@ -23,6 +23,7 @@ import com.nahollenbaugh.mines.drawing.DrawImage;
 import com.nahollenbaugh.mines.drawing.DrawNumberUtil;
 import com.nahollenbaugh.mines.gamelogic.Game;
 import com.nahollenbaugh.mines.gamelogic.NonexistantSquareException;
+import com.nahollenbaugh.mines.gamelogic.Solver;
 
 import static com.nahollenbaugh.mines.drawing.DrawImageUtil.*;
 
@@ -32,6 +33,11 @@ import java.util.ArrayList;
 
 public class GameView extends ZoomableView{
     protected Game game;
+    protected int numbombs;
+    protected int height;
+    protected int width;
+    protected int startI;
+    protected int startJ;
 
     protected float dx = 0;
     protected float squareBorderThickness;
@@ -130,13 +136,18 @@ public class GameView extends ZoomableView{
         uncoveredColor = ContextCompat.getColor(context,R.color.uncovered);
     }
 
-    public void setGameParameters(int numBombs, int height, int width){
-        game = new Game(numBombs,height,width);
+    public void setGameParameters(int numbombs, int height, int width){
+        this.numbombs = numbombs;
+        this.height = height;
+        this.width = width;
         hints = new HintGame.Hint[width][height];
     }
     public void setGame(Game game){
         hints = new HintGame.Hint[game.getWidth()][game.getHeight()];
         this.game = game;
+        numbombs = game.getNumbombs();
+        height = game.getHeight();
+        width = game.getWidth();
         setGameSizes(getWidth(),getHeight());
     }
 
@@ -158,7 +169,14 @@ public class GameView extends ZoomableView{
         return game;
     }
     public void reset(){
-        game = new Game(game.getNumbombs(),game.getHeight(),game.getWidth());
+        if (gameFragment.isNoguessMode()){
+            Solver.NoguessGame noguessGame = Solver.newNoguessGame(numbombs,height,width);
+            game = noguessGame.game;
+            startI = noguessGame.startI;
+            startJ = noguessGame.startJ;
+        } else {
+            game = new Game(numbombs, height, width);
+        }
         stopHints();
         invalidate();
     }
@@ -221,6 +239,8 @@ public class GameView extends ZoomableView{
         int state = drawAllCovered ? Game.COVERED : game.visibleState(i,j);
         state = hints[i][j] != null && hints[i][j].isSafe ? STATE_SAFE_HINT : state;
         state = hints[i][j] != null && !hints[i][j].isSafe ? STATE_BOMB_HINT : state;
+        state = !game.isOpen() && gameFragment.isNoguessMode() && (startI == i) && (startJ == j)
+                ? STATE_SAFE_HINT : state;
 
         float sx = transformXToScreen(x);
         float sy = transformYToScreen(y);
@@ -398,11 +418,14 @@ public class GameView extends ZoomableView{
 
     @Override
     public void onClick(float x, float y){
-        if (game.isWon() || game.isLost()){
-            return;
-        }
         int gameX = getGameXFromReal(x);
         int gameY = getGameYFromReal(y);
+        if (game.isWon() || game.isLost()
+                || (!game.isOpen() && gameFragment.isNoguessMode()
+                    && (((startI != gameX) || (startJ != gameY))
+                        || (gameFragment.isFlagging() && (startI == gameX) && (startJ == gameY))))){
+            return;
+        }
         try {
             if (gameFragment.isFlagging()) {
                 flag(gameX,gameY);

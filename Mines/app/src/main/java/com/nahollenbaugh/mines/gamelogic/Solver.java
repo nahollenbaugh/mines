@@ -5,11 +5,43 @@ import android.util.Log;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class Solver {
 
     // i's go first in arrays, j's first in Game constructor, i's in visible state
 
+    public static class NoguessGame {
+        public Game game;
+        public int startI;
+        public int startJ;
+        public NoguessGame(Game game, int startI, int startJ) {
+            this.game = game;
+            this.startI = startI;
+            this.startJ = startJ;
+        }
+    }
+    public static NoguessGame newNoguessGame(int numbombs, int height, int width) {
+        return newNoguessGame(numbombs, height, width, (long) (Math.random() * 9007199254740991l));
+    }
+    public static NoguessGame newNoguessGame(int numbombs, int height, int width, long seed){
+        Random r = new Random(seed);
+        int startI = r.nextInt(width);
+        int startJ = r.nextInt(height);
+        while (true){
+            Game g = new Game(numbombs, height, width, seed);
+            g.uncover(startI, startJ);
+            play(g);
+            if (g.isWon()){
+                return new NoguessGame(new Game(numbombs, height, width, seed), startI, startJ);
+            }
+            seed = seed+1;
+        }
+    }
+
+    public static void play(Game g){
+        play(g, new boolean[g.getWidth()][g.getHeight()]);
+    }
     public static void play(Game g, boolean[][] known){
         if (data.theCovereds == null || data.theCovereds.length != known.length
                 || data.theCovereds[0].length != known[0].length) {

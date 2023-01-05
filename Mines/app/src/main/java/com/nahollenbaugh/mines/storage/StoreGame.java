@@ -8,6 +8,7 @@ import com.nahollenbaugh.mines.R;
 import com.nahollenbaugh.mines.gamelogic.Game;
 import com.nahollenbaugh.mines.gamelogic.GameData;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +30,9 @@ public class StoreGame {
         out = ctxt.openFileOutput(fileName, Context.MODE_PRIVATE);
     }
     public void openIn() throws IOException {
-        in = ctxt.openFileInput(fileName);
+        if (new File(ctxt.getFilesDir(),fileName).exists()) {
+            in = ctxt.openFileInput(fileName);
+        }
     }
     public boolean closeOut(){
         try {
@@ -40,12 +43,15 @@ public class StoreGame {
         }
     }
     public boolean closeIn(){
-        try {
-            in.close();
-            return true;
-        } catch (IOException e){
-            return false;
+        if (in != null) {
+            try {
+                in.close();
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
         }
+        return true;
     }
 
     public boolean writeGame(GameData gd){
@@ -120,6 +126,9 @@ public class StoreGame {
         GameData g = new GameData();
         try {
             openIn();
+            if (in == null) {
+                return null;
+            }
             boolean done = false;
             int countUncovers = 0;
             while (!done) {
@@ -253,5 +262,4 @@ public class StoreGame {
     protected final static int FLAG_SHIFT = 1;
     protected final static int UNCOVEREDS_SHIFT = 2;
     protected final static int QUESTIONMARK_SHIFT = 3;
-
 }

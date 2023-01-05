@@ -145,7 +145,8 @@ public class ScoresFragment extends Fragment {
                                 .navigate(action);
                     }).show(getParentFragmentManager(), null);
                 }
-            }).show(true, true, true, false,
+            }).show(true,
+                    true, true, true, false,
                     true, false, true, true,
                     false);
         });

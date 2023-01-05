@@ -78,6 +78,7 @@
     <string name="dialog_gameNotFound_positive">Ok</string>
 
     <!-- settings menu -->
+    <string name="settings_noguess">Noguess mode</string>
     <string name="settings_zoom">Allow zoom</string>
     <string name="settings_longPressFlags">Long pressing a square toggles its flag</string>
     <string name="settings_scrollSensitivity">Click sensitivity</string>

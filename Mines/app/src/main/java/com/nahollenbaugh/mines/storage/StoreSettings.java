@@ -15,6 +15,8 @@ public class StoreSettings {
         FileOutputStream out;
         try {
             out = ctxt.openFileOutput(StoredDataStrings.settingsFileName, Context.MODE_PRIVATE);
+            out.write(NOGUESS);
+            out.write(s.isNoguessMode() ? 1 : 0);
             out.write(ALLOW_ZOOM);
             out.write(s.isZoomMode() ? 1 : 0);
             out.write(LONG_PRESS_FLAGS);
@@ -39,6 +41,9 @@ public class StoreSettings {
             boolean done = false;
             while (!done) {
                 switch (in.read()) {
+                    case NOGUESS:
+                        if (s.isNoguessMode() != (in.read() == 1)) s.toggleNoguessMode();
+                        break;
                     case ALLOW_ZOOM:
                         if (s.isZoomMode() != (in.read() == 1)) s.toggleZoomMode();
                         break;
@@ -76,6 +81,7 @@ public class StoreSettings {
     protected static final int CONFIRM_RESET_FACE = 5;
     protected static final int SCROLL_SENSITIVITY = 6;
     protected static final int HINT_BOMB = 7;
+    protected static final int NOGUESS = 8;
     protected static final int END = 0;
 
 }

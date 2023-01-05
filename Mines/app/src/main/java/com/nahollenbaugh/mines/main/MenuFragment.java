@@ -172,7 +172,8 @@ public class MenuFragment extends Fragment {
                                 .navigate(action);
                     }).show();
                 }
-            }).show(true,true,true,false,
+            }).show(true,
+                    true,true,true,false,
                     true,false,true,true,false);
         });
         binding.buttonMenuSettings.setDrawImage(new DrawSettings(
