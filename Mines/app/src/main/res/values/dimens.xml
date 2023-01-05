@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="list_scores_user_endmargin">5dp</dimen>
+    <dimen name="list_scores_user_startmargin">5dp</dimen>
+
+    <dimen name="dialog_save_score_enteruser">300dp</dimen>
+</resources>

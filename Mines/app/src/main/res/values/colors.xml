@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="dark">#FF295443</color>
+    <color name="light">#FFA8D3C2</color>
+    <color name="background">#FFA8D3C2</color>
+
+    <color name="covered">#FF52A886</color>
+    <color name="uncovered">#FFBBBBBB</color>
+
+    <color name="number_blue">#FF0000FF</color>
+    <color name="number_green">#FF008800</color>
+    <color name="number_red">#FFFF0000</color>
+    <color name="number_darkBlue">#FF000088</color>
+    <color name="number_darkRed">#FF880000</color>
+    <color name="number_lightBlue">#FF00DDDD</color>
+    <color name="number_black">#FF000000</color>
+    <color name="number_gray">#FF888888</color>
+    <color name="number_outline">#FF000000</color>
+
+    <color name="squareBorder">#FF222222</color>
+    <color name="gameBorder">#FF222222</color>
+    <color name="listScoreSizes_bold">#FFAAAADD</color>
+    <color name="listScoreSizes_nonbold">#FF6666AA</color>
+    <color name="settings_crossout">#FFFF0000</color>
+    <color name="longpress">#FF295443</color>
+
+    <color name="flag_flagpole">#FF000000</color>
+    <color name="flag_ground">#FF000000</color>
+    <color name="flag_flag">#FFFF0000</color>
+    <color name="button_background">#FF888888</color>
+    <color name="flag_pressed">#FF000000</color>
+    <color name="questionMark">#FF000000</color>
+    <color name="face_head">#FFFFFF00</color>
+    <color name="face_face">#FF000000</color>
+    <color name="zoom">#FF000000</color>
+    <color name="bomb_bomb">#FF000000</color>
+    <color name="bomb_shine">#FFFFFFFF</color>
+    <color name="bomb_explodedBomb">#FFFF0000</color>
+    <color name="bomb_explodedShine">#FFFFFFFF</color>
+    <color name="false_flag_crossout">#FFFF0000</color>
+    <color name="lostBomb_background">#FF80BEA4</color>
+    <color name="hint_safe">#FFA8D3C2</color>
+    <color name="hint_bomb">#FFA8D3C2</color>
+    <color name="hint">#FFFF8888</color>
+
+    <color name="timer_number">#FFFF0000</color>
+    <color name="timer_number_flagging">#FF00DD00</color>
+
+</resources>
