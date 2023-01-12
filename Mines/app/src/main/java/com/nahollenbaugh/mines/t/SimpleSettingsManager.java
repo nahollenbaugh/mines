@@ -14,6 +14,8 @@ public class SimpleSettingsManager implements SettingsManager{
     }
     protected Context ctxt;
     protected boolean isReading;
+    protected boolean isDoubleTapFlagsMode = DOUBLE_TAP_FLAGS_DEFAULT;
+    protected int doubleTapDelay = DOUBLE_TAP_DELAY_DEFAULT;
     protected boolean isNoguessMode = NOGUESS_MODE_DEFAULT;
     protected boolean isQuestionMarkMode = QUESTION_MARK_MODE_DEFAULT;
     protected boolean isZoomMode = ZOOM_MODE_DEFAULT;
@@ -22,6 +24,20 @@ public class SimpleSettingsManager implements SettingsManager{
     protected boolean isConfirmResetFace = CONFIRM_RESET_FACE_DEFAULT;
     protected boolean isHintBombMode = HINT_BOMB_MODE_DEFAULT;
 
+    public void toggleDoubleTapFlagsMode(){
+        isDoubleTapFlagsMode = ! isDoubleTapFlagsMode;
+        write();
+    }
+    public boolean isDoubleTapFlagsMode() {
+        return isDoubleTapFlagsMode;
+    }
+    public void setDoubleTapDelay(int delay){
+        this.doubleTapDelay = delay;
+        write();
+    }
+    public int getDoubleTapDelay(){
+        return doubleTapDelay;
+    }
     public void toggleNoguessMode(){
         isNoguessMode = !isNoguessMode();
         write();

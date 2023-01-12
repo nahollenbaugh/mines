@@ -2,6 +2,7 @@ package com.nahollenbaugh.mines.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -9,7 +10,14 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.util.ArrayMap;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ZoomableView extends View {
 
@@ -67,11 +75,43 @@ public class ZoomableView extends View {
                     pointerStarts.remove(e.getPointerId(e.getActionIndex()));
                     invalidate();
                 }
+
             });
     }
 
     // read click gestures
-    protected Map<Integer, Pair<Float,Float>> pointerStarts = new ArrayMap<>();
+    protected Stack<ClickTimer> unusedTimers = new Stack<>();
+    protected List<ClickTimer> activeTimers = new ArrayList<>();
+    protected class ClickTimer{
+        public ClickTimer(){
+            timer = new Timer(false);
+        }
+        long time;
+        int component;
+        Timer timer;
+        CallOnSingleClick task;
+    }
+    protected class CallOnSingleClick extends TimerTask {
+        public float x;
+        public float y;
+        public CallOnSingleClick(float x, float y){
+            this.x = x;
+            this.y = y;
+        }
+        public void run(){
+            onSingleClickConfirmed(x,y);
+            Iterator<ClickTimer> it = activeTimers.iterator();
+            while (it.hasNext()){
+                ClickTimer t = it.next();
+                if (this == t.task) {
+                    it.remove();
+                    unusedTimers.push(t);
+                    break;
+                }
+            }
+        }
+    }
+    protected Map<Integer, Pair<Pair<Float,Float>,Timer>> pointerStarts = new ArrayMap<>();
     @Override
     public boolean onTouchEvent(MotionEvent e){
         scaleGestureDetector.onTouchEvent(e);
@@ -87,16 +127,44 @@ public class ZoomableView extends View {
                 || action == MotionEvent.ACTION_POINTER_1_DOWN
                 || action == MotionEvent.ACTION_POINTER_2_DOWN
                 || action == MotionEvent.ACTION_POINTER_3_DOWN){
-            pointerStarts.put(pointerId, new Pair<>(x,y));
+            pointerStarts.put(pointerId, new Pair<>(new Pair<>(x,y), null));
         } else if (action == MotionEvent.ACTION_UP
                 || action == MotionEvent.ACTION_POINTER_UP
                 || action == MotionEvent.ACTION_POINTER_1_UP
                 || action == MotionEvent.ACTION_POINTER_2_UP
                 || action == MotionEvent.ACTION_POINTER_3_UP) {
-            Pair<Float, Float> start = pointerStarts.get(pointerId);
+            Pair<Pair<Float, Float>,Timer> start = pointerStarts.get(pointerId);
             if (start != null) {
-                if (isSmallScroll(start.first, start.second, x, y)) {
-                    onClick(transformXToReal(x), transformYToReal(y));
+                float realX = transformXToReal(x);
+                float realY = transformYToReal(y);
+                if (isSmallScroll(start.first.first, start.first.second, x, y)) {
+                    onClick(realX, realY);
+
+                    Iterator<ClickTimer> it = activeTimers.iterator();
+                    long currentTime = Calendar.getInstance().getTimeInMillis();
+                    boolean hasDoubleClicked = false;
+                    while (it.hasNext()) {
+                        ClickTimer t = it.next();
+                        if (currentTime - t.time < doubleTapDelay
+                                && t.component == getComponent(realX, realY)) {
+                            t.task.cancel();
+                            t.timer.purge();
+                            unusedTimers.push(t);
+                            hasDoubleClicked = true;
+                            onDoubleClick(t.task.x, t.task.y);
+                            it.remove();
+                        }
+                    }
+                    if (!hasDoubleClicked) {
+                        ClickTimer timer = unusedTimers.size() > 0
+                                ? unusedTimers.pop()
+                                : new ClickTimer();
+                        timer.task = new CallOnSingleClick(realX, realY);
+                        timer.component = getComponent(realX, realY);
+                        timer.time = currentTime;
+                        timer.timer.schedule(timer.task, doubleTapDelay);
+                        activeTimers.add(timer);
+                    }
                     invalidate();
                 }
                 pointerStarts.remove(pointerId);
@@ -105,6 +173,9 @@ public class ZoomableView extends View {
             pointerStarts.remove(pointerId);
         }
         return true;
+    }
+    protected int getComponent(float realX, float realY){
+        return 0;
     }
 
     protected float smallScrollX = 10;
@@ -124,6 +195,20 @@ public class ZoomableView extends View {
         return (xDist <= smallScrollX) && (yDist <= smallScrollY);
     }
 
+    protected long doubleTapDelay = 200;
+    public void setDoubleTapDelay(int delay){
+        this.doubleTapDelay = delay;
+    }
+    public int getDoubleTapDelay(){
+        return (int)doubleTapDelay;
+    }
+
+    public void onSingleClickConfirmed(float x, float y){
+        // do nothing.  Override to do stuff.
+    }
+    public void onDoubleClick(float x, float y){
+        // do nothing.  Override to do stuff.
+    }
     public void onClick(float x, float y) {
         // do nothing.  Override to do stuff.
     }

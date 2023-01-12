@@ -78,6 +78,9 @@
     <string name="dialog_gameNotFound_positive">Ok</string>
 
     <!-- settings menu -->
+    <string name="settings_doubleTapDelay">Double tap delay</string>
+    <string name="settings_doubleTapFlags">Set flag with double tap. You can adjust the delay
+        below</string>
     <string name="settings_noguess">Noguess mode</string>
     <string name="settings_zoom">Allow zoom</string>
     <string name="settings_longPressFlags">Long pressing a square toggles its flag</string>
@@ -105,8 +108,8 @@
     adjacent to it</string>
     <string name="info_rulesWin">Find all the bombs by uncovering all of the safe squares to win
     </string>
-    <string name="info_flag">Mark a square as a bomb with a flag either by long pressing (if
-        enabled in settings) it or with the flag button</string>
+    <string name="info_flag">Mark a square as a bomb with a flag either by long pressing or double
+        tapping (if enabled in settings) it or with the flag button</string>
     <string name="info_questionMark">If you\'re unsure about a square, you can mark it with a
     question mark by flagging it again. A third time removes the flag altogether</string>
     <string name="info_questionMarkSettings">Or turn off question marks in settings

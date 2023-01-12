@@ -370,17 +370,36 @@ public class GameView extends ZoomableView{
     protected int getGameYFromReal(float yReal){
         return (int)((yReal-gameBorderThickness)/dx);
     }
+    @Override
+    protected int getComponent(float xReal, float yReal){
+        return getGameXFromReal(xReal)+game.getWidth()*getGameYFromReal(yReal);
+    }
 
+    protected void uncover(int gameX, int gameY){
+        try {
+            if (game.uncover(gameX, gameY)) {
+                gameFragment.alertGameChange(GameWatcher.CHANGE_UNCOVERED);
+                if (game.countUncovers == 1) {
+                    gameFragment.alertGameChange(GameWatcher.CHANGE_STARTED);
+                }
+            }
+            checkWon();
+            checkLost();
+            invalidate();
+        } catch(NonexistantSquareException e){}
+    }
     protected void flag(int gameX, int gameY) {
-        boolean flagged;
-        if (gameFragment.isQuestionMarkMode()){
-            flagged = game.cycleFlagQuestionMark(gameX, gameY);
-        } else {
-            flagged = game.flag(gameX, gameY);
-        }
-        if (flagged){
-            flagAlert(gameX, gameY);
-        }
+        try {
+            boolean flagged;
+            if (gameFragment.isQuestionMarkMode()) {
+                flagged = game.cycleFlagQuestionMark(gameX, gameY);
+            } else {
+                flagged = game.flag(gameX, gameY);
+            }
+            if (flagged) {
+                flagAlert(gameX, gameY);
+            }
+        } catch(NonexistantSquareException e){}
     }
     protected void flagAlert(int gameX, int gameY){
         if ((game.visibleState(gameX, gameY) & Game.STATE_MASK) == Game.FLAGGED) {
@@ -429,16 +448,8 @@ public class GameView extends ZoomableView{
         try {
             if (gameFragment.isFlagging()) {
                 flag(gameX,gameY);
-            } else {
-                if (game.uncover(gameX,gameY)){
-                    gameFragment.alertGameChange(GameWatcher.CHANGE_UNCOVERED);
-                    if (game.countUncovers == 1) {
-                        gameFragment.alertGameChange(GameWatcher.CHANGE_STARTED);
-                    }
-                }
-                checkWon();
-                checkLost();
-                invalidate();
+            } else if (!gameFragment.isDoubleTapFlagsMode()){
+                uncover(gameX,gameY);
             }
         } catch (NonexistantSquareException exception){
         }
@@ -447,6 +458,20 @@ public class GameView extends ZoomableView{
     @Override
     public void onLongClick(float x, float y){
         if (gameFragment.isLongPressFlagsMode()) {
+            flag(getGameXFromReal(x), getGameYFromReal(y));
+        }
+    }
+
+    @Override
+    public void onSingleClickConfirmed(float x, float y){
+        if (gameFragment.isDoubleTapFlagsMode() && !gameFragment.isFlagging()){
+            uncover(getGameXFromReal(x),getGameYFromReal(y));
+        }
+    }
+
+    @Override
+    public void onDoubleClick(float x, float y){
+        if (gameFragment.isDoubleTapFlagsMode()) {
             flag(getGameXFromReal(x), getGameYFromReal(y));
         }
     }

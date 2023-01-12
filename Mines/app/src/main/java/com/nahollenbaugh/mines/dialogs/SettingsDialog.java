@@ -45,6 +45,7 @@ public class SettingsDialog extends DialogFragment {
         this.s = s;
     }
 
+    boolean doubleTapFlags;
     boolean noguess;
     boolean allowZoom;
     boolean longPressFlags;
@@ -56,10 +57,11 @@ public class SettingsDialog extends DialogFragment {
     boolean scrollSensitivity;
     boolean hintBomb;
 
-    public void show(boolean noguess,
+    public void show(boolean doubleTapFlags, boolean noguess,
                      boolean allowZoom, boolean longPressFlags, boolean useQuestionMarks,
                      boolean fixedZoomLevel, boolean resetFace, boolean storeGame,
                      boolean viewStoredGames, boolean hintBomb, boolean scrollSensitivity){
+        this.doubleTapFlags = doubleTapFlags;
         this.noguess = noguess;
         this.allowZoom = allowZoom;
         this.longPressFlags = longPressFlags;
@@ -144,6 +146,27 @@ public class SettingsDialog extends DialogFragment {
                     s.isQuestionMarkMode(),
                     getResources().getString(R.string.settings_useQuestionMark),
                     v -> s.toggleQuestionMarkMode());
+        }
+        if (doubleTapFlags) {
+            grid.addItem(new DrawSmall(new DrawFlag(dark,dark,dark),0.6f,0.6f),
+                    crossOutColor,
+                    s.isDoubleTapFlagsMode(),
+                    getResources().getString(R.string.settings_doubleTapFlags),
+                    v -> s.toggleDoubleTapFlagsMode());
+            final CounterView counter = new CounterView(ctxt,null);
+            counter.setCount(s.getDoubleTapDelay());
+            grid.addItem(counter,
+                    new DrawPlus(dark),
+                    v -> {
+                        s.setDoubleTapDelay(s.getDoubleTapDelay() + 1 > 9 ? 9 : s.getDoubleTapDelay() + 1);
+                        counter.setCount(s.getDoubleTapDelay());
+                    },
+                    new DrawMinus(dark),
+                    v -> {
+                        s.setDoubleTapDelay(s.getDoubleTapDelay() - 1 < 0 ? 0 : s.getDoubleTapDelay() - 1);
+                        counter.setCount(s.getDoubleTapDelay());
+                    },
+                    getResources().getString(R.string.settings_doubleTapDelay));
         }
         if (resetFace) {
             DrawResetFace draw = new DrawResetFace(

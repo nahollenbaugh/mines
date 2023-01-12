@@ -2,6 +2,15 @@ package com.nahollenbaugh.mines.t;
 
 public interface SettingsManager {
 
+    boolean DOUBLE_TAP_FLAGS_DEFAULT = false;
+    void toggleDoubleTapFlagsMode();
+    boolean isDoubleTapFlagsMode();
+
+    int[] DOUBLE_TAP_DELAYS = new int[]{80,110,140,170,200,250,300,400,600,1000};
+    int DOUBLE_TAP_DELAY_DEFAULT = 3;
+    void setDoubleTapDelay(int delay);
+    int getDoubleTapDelay();
+
     boolean NOGUESS_MODE_DEFAULT = false;
     void toggleNoguessMode();
     boolean isNoguessMode();

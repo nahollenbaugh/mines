@@ -15,6 +15,10 @@ public class StoreSettings {
         FileOutputStream out;
         try {
             out = ctxt.openFileOutput(StoredDataStrings.settingsFileName, Context.MODE_PRIVATE);
+            out.write(DOUBLE_TAP_FLAGS);
+            out.write(s.isDoubleTapFlagsMode() ? 1 : 0);
+            out.write(DOUBLE_TAP_DELAY);
+            out.write(s.getDoubleTapDelay());
             out.write(NOGUESS);
             out.write(s.isNoguessMode() ? 1 : 0);
             out.write(ALLOW_ZOOM);
@@ -41,6 +45,12 @@ public class StoreSettings {
             boolean done = false;
             while (!done) {
                 switch (in.read()) {
+                    case DOUBLE_TAP_FLAGS:
+                        if (s.isDoubleTapFlagsMode() != (in.read() == 1)) s.toggleDoubleTapFlagsMode();
+                        break;
+                    case DOUBLE_TAP_DELAY:
+                        s.setDoubleTapDelay(in.read());
+                        break;
                     case NOGUESS:
                         if (s.isNoguessMode() != (in.read() == 1)) s.toggleNoguessMode();
                         break;
@@ -82,6 +92,8 @@ public class StoreSettings {
     protected static final int SCROLL_SENSITIVITY = 6;
     protected static final int HINT_BOMB = 7;
     protected static final int NOGUESS = 8;
+    protected static final int DOUBLE_TAP_FLAGS = 9;
+    protected static final int DOUBLE_TAP_DELAY = 10;
     protected static final int END = 0;
 
 }

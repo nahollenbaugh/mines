@@ -55,6 +55,8 @@ import java.util.Set;
 public class GameFragment extends Fragment implements GameWatcher, SettingsManager {
 
     FragmentGameBinding binding;
+    protected boolean doubleTapFlagsMode = SettingsManager.DOUBLE_TAP_FLAGS_DEFAULT;
+    protected int doubleTapDelay = SettingsManager.DOUBLE_TAP_DELAY_DEFAULT;
     protected boolean noguessMode = SettingsManager.NOGUESS_MODE_DEFAULT;
     protected boolean questionMarkMode = SettingsManager.QUESTION_MARK_MODE_DEFAULT;
     protected boolean allowingZoom = SettingsManager.ZOOM_MODE_DEFAULT;
@@ -216,7 +218,7 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
                 ContextCompat.getColor(ctxt, R.color.dark),
                 ContextCompat.getColor(ctxt, R.color.transparent)));
         binding.buttonSettings.setOnClickListener(v -> {
-                    new SettingsDialog(this, this).show(true,
+                    new SettingsDialog(this, this).show(true, true,
                             true, true,
                             true, true, true, true,
                             true, true, false);
@@ -336,6 +338,19 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         StoreSettings.read(requireContext(), this);
     }
 
+    public boolean isDoubleTapFlagsMode(){
+        return doubleTapFlagsMode;
+    }
+    public void toggleDoubleTapFlagsMode(){
+        doubleTapFlagsMode = !doubleTapFlagsMode;
+    }
+    public void setDoubleTapDelay(int delay){
+        this.doubleTapDelay = delay;
+        binding.gameView.setDoubleTapDelay(SettingsManager.DOUBLE_TAP_DELAYS[delay]);
+    }
+    public int getDoubleTapDelay(){
+        return doubleTapDelay;
+    }
     public boolean isNoguessMode() {
         return noguessMode;
     }
