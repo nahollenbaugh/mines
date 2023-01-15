@@ -78,6 +78,9 @@
     <string name="dialog_gameNotFound_positive">Ok</string>
 
     <!-- settings menu -->
+    <string name="settings_chord">Chording: When a square has the correct number of flags set
+        around it, uncover the adjacent squares, either by tapping it or by double tapping it.
+    </string>
     <string name="settings_doubleTapDelay">Double tap delay</string>
     <string name="settings_doubleTapFlags">Set flag with double tap. You can adjust the delay
         below</string>

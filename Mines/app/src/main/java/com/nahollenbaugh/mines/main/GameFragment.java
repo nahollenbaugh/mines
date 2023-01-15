@@ -55,6 +55,7 @@ import java.util.Set;
 public class GameFragment extends Fragment implements GameWatcher, SettingsManager {
 
     FragmentGameBinding binding;
+    protected int chordMode = SettingsManager.CHORD_MODE_DEFAULT;
     protected boolean doubleTapFlagsMode = SettingsManager.DOUBLE_TAP_FLAGS_DEFAULT;
     protected int doubleTapDelay = SettingsManager.DOUBLE_TAP_DELAY_DEFAULT;
     protected boolean noguessMode = SettingsManager.NOGUESS_MODE_DEFAULT;
@@ -219,6 +220,7 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
                 ContextCompat.getColor(ctxt, R.color.transparent)));
         binding.buttonSettings.setOnClickListener(v -> {
                     new SettingsDialog(this, this).show(true, true,
+                            true,
                             true, true,
                             true, true, true, true,
                             true, true, false);
@@ -338,6 +340,12 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
         StoreSettings.read(requireContext(), this);
     }
 
+    public int getChordMode(){
+        return chordMode;
+    }
+    public void setChordMode(int chordMode){
+        this.chordMode = chordMode;
+    }
     public boolean isDoubleTapFlagsMode(){
         return doubleTapFlagsMode;
     }

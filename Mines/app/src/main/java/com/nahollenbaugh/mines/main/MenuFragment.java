@@ -172,7 +172,7 @@ public class MenuFragment extends Fragment {
                                 .navigate(action);
                     }).show();
                 }
-            }).show(true,true,
+            }).show(true,true,true,
                     true,true,true,false,
                     true,false,true,true,false);
         });

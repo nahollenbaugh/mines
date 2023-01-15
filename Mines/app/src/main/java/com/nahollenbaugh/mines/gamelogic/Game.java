@@ -91,10 +91,59 @@ public class Game {
         return true;
     }
 
+    public boolean chord(int x, int y){
+        if (isWon() || isLost()){
+            return false;
+        }
+        checkIsSquare(x,y);
+        if (!uncovereds[x][y] || flags[x][y] || questionMarks[x][y]){
+            return false;
+        }
+        int adjacentFlags = 0;
+        if (x < width-1 && y < height-1) if (flags[x+1][y+1]) adjacentFlags++;
+        if (x < width-1)                 if (flags[x+1][y])   adjacentFlags++;
+        if (x < width-1 && y > 0)        if (flags[x+1][y-1]) adjacentFlags++;
+        if (               y < height-1) if (flags[x][y+1])   adjacentFlags++;
+        if (               y > 0)        if (flags[x][y-1])   adjacentFlags++;
+        if (x > 0       && y < height-1) if (flags[x-1][y+1]) adjacentFlags++;
+        if (x > 0)                       if (flags[x-1][y])   adjacentFlags++;
+        if (x > 0       && y > 0)        if (flags[x-1][y-1]) adjacentFlags++;
+        if (adjacentFlags == numbers[x][y]){
+            if (x < width-1 && y < height-1) questionMarks[x+1][y+1] = false;
+            if (x < width-1)                 questionMarks[x+1][y] = false;
+            if (x < width-1 && y > 0)        questionMarks[x+1][y-1] = false;
+            if (               y < height-1) questionMarks[x][y+1] = false;
+            if (               y > 0)        questionMarks[x][y-1] = false;
+            if (x > 0       && y < height-1) questionMarks[x-1][y+1] = false;
+            if (x > 0)                       questionMarks[x-1][y] = false;
+            if (x > 0       && y > 0)        questionMarks[x-1][y-1] = false;
+
+            boolean changed = false;
+            if (x < width-1 && y < height-1) if (!flags[x+1][y+1]) changed = quietUncover(x+1,y+1) || changed;
+            if (x < width-1)                 if (!flags[x+1][y])   changed = quietUncover(x+1,y) || changed;
+            if (x < width-1 && y > 0)        if (!flags[x+1][y-1]) changed = quietUncover(x+1,y-1) || changed;
+            if (               y < height-1) if (!flags[x][y+1])   changed = quietUncover(x,y+1) || changed;
+            if (               y > 0)        if (!flags[x][y-1])   changed = quietUncover(x,y-1) || changed;
+            if (x > 0       && y < height-1) if (!flags[x-1][y+1]) changed = quietUncover(x-1,y+1) || changed;
+            if (x > 0)                       if (!flags[x-1][y])   changed = quietUncover(x-1,y) || changed;
+            if (x > 0       && y > 0)        if (!flags[x-1][y-1]) changed = quietUncover(x-1,y-1) || changed;
+            if (changed){
+                isWonStale = true;
+                uncoverZeroes();
+                countUncovers = countUncovers + 1;
+            }
+            return changed;
+        }
+        return false;
+    }
+
     protected void checkIsSquare(int x, int y) {
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1) {
+        if (!isSquare(x,y)) {
             throw new NonexistantSquareException("(" + x + "," + y + ")");
         }
+    }
+    public boolean isSquare(int x, int y){
+        return !(x < 0 || x > width - 1 || y < 0 || y > height - 1);
     }
 
     protected void uncoverZeroes(){
@@ -120,6 +169,9 @@ public class Game {
     protected boolean quietUncover(int x, int y){
         if (uncovereds[x][y] || flags[x][y] || questionMarks[x][y]){
             return false;
+        }
+        if (bombs[x][y]) {
+            uncover(x,y);
         }
         uncovereds[x][y] = true;
         return true;

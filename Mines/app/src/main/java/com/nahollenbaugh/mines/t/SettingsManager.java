@@ -2,6 +2,13 @@ package com.nahollenbaugh.mines.t;
 
 public interface SettingsManager {
 
+    int CHORD_MODE_NONE = 0;
+    int CHORD_MODE_DOUBLETAP = 1;
+    int CHORD_MODE_SINGLETAP = 2;
+    int CHORD_MODE_DEFAULT = CHORD_MODE_NONE;
+    void setChordMode(int chordMode);
+    int getChordMode();
+
     boolean DOUBLE_TAP_FLAGS_DEFAULT = false;
     void toggleDoubleTapFlagsMode();
     boolean isDoubleTapFlagsMode();

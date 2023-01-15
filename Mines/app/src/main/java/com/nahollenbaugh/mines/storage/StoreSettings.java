@@ -12,9 +12,12 @@ import java.io.IOException;
 public class StoreSettings {
 
     public static void store(Context ctxt, SettingsManager s){
+
         FileOutputStream out;
         try {
             out = ctxt.openFileOutput(StoredDataStrings.settingsFileName, Context.MODE_PRIVATE);
+            out.write(CHORD_MODE);
+            out.write(s.getChordMode());
             out.write(DOUBLE_TAP_FLAGS);
             out.write(s.isDoubleTapFlagsMode() ? 1 : 0);
             out.write(DOUBLE_TAP_DELAY);
@@ -45,6 +48,9 @@ public class StoreSettings {
             boolean done = false;
             while (!done) {
                 switch (in.read()) {
+                    case CHORD_MODE:
+                        s.setChordMode(in.read());
+                        break;
                     case DOUBLE_TAP_FLAGS:
                         if (s.isDoubleTapFlagsMode() != (in.read() == 1)) s.toggleDoubleTapFlagsMode();
                         break;
@@ -94,6 +100,7 @@ public class StoreSettings {
     protected static final int NOGUESS = 8;
     protected static final int DOUBLE_TAP_FLAGS = 9;
     protected static final int DOUBLE_TAP_DELAY = 10;
+    protected static final int CHORD_MODE = 11;
     protected static final int END = 0;
 
 }

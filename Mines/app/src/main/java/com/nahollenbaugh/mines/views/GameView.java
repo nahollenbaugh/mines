@@ -24,6 +24,7 @@ import com.nahollenbaugh.mines.drawing.DrawNumberUtil;
 import com.nahollenbaugh.mines.gamelogic.Game;
 import com.nahollenbaugh.mines.gamelogic.NonexistantSquareException;
 import com.nahollenbaugh.mines.gamelogic.Solver;
+import com.nahollenbaugh.mines.t.SettingsManager;
 
 import static com.nahollenbaugh.mines.drawing.DrawImageUtil.*;
 
@@ -388,6 +389,16 @@ public class GameView extends ZoomableView{
             invalidate();
         } catch(NonexistantSquareException e){}
     }
+    protected void chord(int gameX, int gameY){
+        try{
+            if (game.chord(gameX, gameY)) {
+                gameFragment.alertGameChange(GameWatcher.CHANGE_UNCOVERED);
+                checkWon();
+                checkLost();
+                invalidate();
+            }
+        } catch (NonexistantSquareException e){}
+    }
     protected void flag(int gameX, int gameY) {
         try {
             boolean flagged;
@@ -439,6 +450,9 @@ public class GameView extends ZoomableView{
     public void onClick(float x, float y){
         int gameX = getGameXFromReal(x);
         int gameY = getGameYFromReal(y);
+        if (!game.isSquare(gameX, gameY)){
+            return;
+        }
         if (game.isWon() || game.isLost()
                 || (!game.isOpen() && gameFragment.isNoguessMode()
                     && (((startI != gameX) || (startJ != gameY))
@@ -448,8 +462,13 @@ public class GameView extends ZoomableView{
         try {
             if (gameFragment.isFlagging()) {
                 flag(gameX,gameY);
-            } else if (!gameFragment.isDoubleTapFlagsMode()){
-                uncover(gameX,gameY);
+            } else {
+                if (gameFragment.getChordMode() == SettingsManager.CHORD_MODE_SINGLETAP
+                        && game.getUncovereds()[gameX][gameY]) {
+                    game.chord(gameX, gameY);
+                } else if (!gameFragment.isDoubleTapFlagsMode()) {
+                    uncover(gameX, gameY);
+                }
             }
         } catch (NonexistantSquareException exception){
         }
@@ -473,6 +492,9 @@ public class GameView extends ZoomableView{
     public void onDoubleClick(float x, float y){
         if (gameFragment.isDoubleTapFlagsMode()) {
             flag(getGameXFromReal(x), getGameYFromReal(y));
+        }
+        if (gameFragment.getChordMode() == SettingsManager.CHORD_MODE_DOUBLETAP){
+            chord(getGameXFromReal(x), getGameYFromReal(y));
         }
     }
 

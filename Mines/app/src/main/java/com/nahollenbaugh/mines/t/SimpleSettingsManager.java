@@ -14,6 +14,7 @@ public class SimpleSettingsManager implements SettingsManager{
     }
     protected Context ctxt;
     protected boolean isReading;
+    protected int chordMode = CHORD_MODE_DEFAULT;
     protected boolean isDoubleTapFlagsMode = DOUBLE_TAP_FLAGS_DEFAULT;
     protected int doubleTapDelay = DOUBLE_TAP_DELAY_DEFAULT;
     protected boolean isNoguessMode = NOGUESS_MODE_DEFAULT;
@@ -24,6 +25,13 @@ public class SimpleSettingsManager implements SettingsManager{
     protected boolean isConfirmResetFace = CONFIRM_RESET_FACE_DEFAULT;
     protected boolean isHintBombMode = HINT_BOMB_MODE_DEFAULT;
 
+    public void setChordMode(int chordMode){
+        this.chordMode = chordMode;
+        write();
+    }
+    public int getChordMode(){
+        return chordMode;
+    }
     public void toggleDoubleTapFlagsMode(){
         isDoubleTapFlagsMode = ! isDoubleTapFlagsMode;
         write();

@@ -25,6 +25,7 @@ import com.nahollenbaugh.mines.drawing.DrawFloppy;
 import com.nahollenbaugh.mines.drawing.DrawImage;
 import com.nahollenbaugh.mines.drawing.DrawInfo;
 import com.nahollenbaugh.mines.drawing.DrawMinus;
+import com.nahollenbaugh.mines.drawing.DrawNumber;
 import com.nahollenbaugh.mines.drawing.DrawNumberUtil;
 import com.nahollenbaugh.mines.drawing.DrawPlus;
 import com.nahollenbaugh.mines.drawing.DrawQuestionMark;
@@ -34,6 +35,7 @@ import com.nahollenbaugh.mines.drawing.DrawSmall;
 import com.nahollenbaugh.mines.drawing.DrawZoom;
 import com.nahollenbaugh.mines.t.SettingsManager;
 import com.nahollenbaugh.mines.views.CounterView;
+import com.nahollenbaugh.mines.views.DrawnCycle;
 import com.nahollenbaugh.mines.views.InfoGrid;
 
 public class SettingsDialog extends DialogFragment {
@@ -45,6 +47,7 @@ public class SettingsDialog extends DialogFragment {
         this.s = s;
     }
 
+    boolean chord;
     boolean doubleTapFlags;
     boolean noguess;
     boolean allowZoom;
@@ -57,10 +60,11 @@ public class SettingsDialog extends DialogFragment {
     boolean scrollSensitivity;
     boolean hintBomb;
 
-    public void show(boolean doubleTapFlags, boolean noguess,
+    public void show(boolean doubleTapFlags, boolean noguess, boolean chord,
                      boolean allowZoom, boolean longPressFlags, boolean useQuestionMarks,
                      boolean fixedZoomLevel, boolean resetFace, boolean storeGame,
                      boolean viewStoredGames, boolean hintBomb, boolean scrollSensitivity){
+        this.chord = chord;
         this.doubleTapFlags = doubleTapFlags;
         this.noguess = noguess;
         this.allowZoom = allowZoom;
@@ -86,6 +90,37 @@ public class SettingsDialog extends DialogFragment {
 
         int crossOutColor = ContextCompat.getColor(ctxt, R.color.settings_crossout);
         int dark = ContextCompat.getColor(ctxt, R.color.dark);
+        if (chord) {
+            final DrawnCycle modes = new DrawnCycle(ctxt, null, 3);
+            final DrawImage singleTap = new DrawNumber(1,dark,dark);
+            final DrawImage doubleTap = new DrawNumber(2,dark,dark);
+            final DrawImage none = new DrawCrossedOut(new DrawShovel(dark),crossOutColor);
+            modes.addImage(none);
+            modes.addImage(singleTap);
+            modes.addImage(doubleTap);
+            switch (s.getChordMode()){
+                case SettingsManager.CHORD_MODE_NONE:
+                    modes.goTo(none);
+                    break;
+                case SettingsManager.CHORD_MODE_SINGLETAP:
+                    modes.goTo(singleTap);
+                    break;
+                case SettingsManager.CHORD_MODE_DOUBLETAP:
+                    modes.goTo(doubleTap);
+                    break;
+            }
+            modes.setOnClickListener(v -> {
+                        DrawImage image = modes.getDrawImage();
+                        if (image == none) {
+                            s.setChordMode(SettingsManager.CHORD_MODE_NONE);
+                        } else if (image == singleTap) {
+                            s.setChordMode(SettingsManager.CHORD_MODE_SINGLETAP);
+                        } else if (image == doubleTap) {
+                            s.setChordMode(SettingsManager.CHORD_MODE_DOUBLETAP);
+                        }
+                    });
+            grid.addItem(modes,getResources().getString(R.string.settings_chord));
+        }
         if (noguess) {
             grid.addItem(new DrawShovel(dark),
                     crossOutColor,
