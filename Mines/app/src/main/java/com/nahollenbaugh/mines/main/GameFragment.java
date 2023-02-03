@@ -1,10 +1,8 @@
 package com.nahollenbaugh.mines.main;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +24,7 @@ import com.nahollenbaugh.mines.drawing.DrawQuestionMark;
 import com.nahollenbaugh.mines.drawing.DrawWithBackground;
 import com.nahollenbaugh.mines.storage.StoreSettings;
 import com.nahollenbaugh.mines.storage.StoredGamesManager;
-import com.nahollenbaugh.mines.views.DrawnButton;
-import com.nahollenbaugh.mines.views.InfoDialog;
+import com.nahollenbaugh.mines.dialogs.InfoDialog;
 import com.nahollenbaugh.mines.dialogs.SettingsDialog;
 import com.nahollenbaugh.mines.drawing.DrawBack;
 import com.nahollenbaugh.mines.drawing.DrawNumberUtil;
@@ -220,7 +217,7 @@ public class GameFragment extends Fragment implements GameWatcher, SettingsManag
                 ContextCompat.getColor(ctxt, R.color.transparent)));
         binding.buttonSettings.setOnClickListener(v -> {
                     new SettingsDialog(this, this).show(true, true,
-                            true,
+                            true, true,
                             true, true,
                             true, true, true, true,
                             true, true, false);

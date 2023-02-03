@@ -32,11 +32,9 @@ public class LinearLayoutReorder extends LinearLayout {
      */
     public void setMeasureOrder(View[] measureOrder) {
         this.measureOrder = measureOrder;
-        requestLayout();
     }
     protected void setDisplayOrder(View[] displayOrder){
         this.displayOrder = displayOrder;
-        requestLayout();
     }
 
     @Override

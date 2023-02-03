@@ -2,12 +2,9 @@ package com.nahollenbaugh.mines.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
@@ -22,74 +19,28 @@ import com.nahollenbaugh.mines.drawing.DrawNumberUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InfoGrid extends GridLayout {
+public class InfoGrid extends LinearLayoutReorder {
 
     protected List<Item> rows = new ArrayList<>();
-    protected Space topSpace;
-    protected Space bottomSpace;
 
-    protected float dim;
     protected int dark;
     protected int unit;
-    protected float spaceWidth = 0.25f;
-    protected float spaceHeight = 1.5f;
     float textSize = 20f;
 
     protected Context ctxt;
 
     public InfoGrid(Context ctxt, AttributeSet attrs) {
         super(ctxt, attrs);
+        this.setVerticalScrollBarEnabled(true);
+        setOrientation(VERTICAL);
+        setShowDividers(SHOW_DIVIDER_MIDDLE+SHOW_DIVIDER_BEGINNING+SHOW_DIVIDER_END);
+        setDividerDrawable(getResources().getDrawable(R.drawable.infogrid_vertical_divider));
         this.ctxt = ctxt;
         dark = ContextCompat.getColor(ctxt, R.color.dark);
         unit = TypedValue.COMPLEX_UNIT_PX;
-
-        topSpace = new Space(ctxt, null);
-        addView(topSpace, new LayoutParams(GridLayout.spec(0, 1),
-                GridLayout.spec(1,1)));
-        bottomSpace = new Space(ctxt, null);
-        addView(bottomSpace, new LayoutParams(GridLayout.spec(1, 1),
-                GridLayout.spec(1,1)));
     }
 
     public Item addItem(Item item) {
-        LayoutParams params;
-
-        params = (LayoutParams) bottomSpace.getLayoutParams();
-        params.rowSpec = GridLayout.spec(rows.size() + 2, 1);
-        bottomSpace.setLayoutParams(params);
-
-        addView(item.middleSpace);
-        params = (LayoutParams) item.middleSpace.getLayoutParams();
-        params.rowSpec = spec(rows.size() + 1, 1);
-        params.columnSpec = spec(2, 1);
-        item.middleSpace.setLayoutParams(params);
-
-        addView(item.startSpace);
-        params = (LayoutParams) item.startSpace.getLayoutParams();
-        params.rowSpec = spec(rows.size() + 1, 1);
-        params.columnSpec = spec(0, 1);
-        item.startSpace.setLayoutParams(params);
-
-        addView(item.endSpace);
-        params = (LayoutParams) item.endSpace.getLayoutParams();
-        params.rowSpec = spec(rows.size() + 1, 1);
-        params.columnSpec = spec(4, 1);
-        item.endSpace.setLayoutParams(params);
-
-        addView(item.image);
-        params = (LayoutParams) item.image.getLayoutParams();
-        params.rowSpec = GridLayout.spec(rows.size() + 1, 1);
-        params.columnSpec = GridLayout.spec(1, 1);
-        params.setGravity(Gravity.CENTER_VERTICAL + Gravity.CENTER_HORIZONTAL);
-        item.image.setLayoutParams(params);
-
-        addView(item.description);
-        params = (LayoutParams) item.description.getLayoutParams();
-        params.rowSpec = spec(rows.size() + 1, 1);
-        params.columnSpec = spec(3, 1);
-        params.width = 0;
-        params.setGravity(Gravity.FILL_HORIZONTAL + Gravity.CENTER_VERTICAL);
-        item.description.setLayoutParams(params);
         if (item.description instanceof TextView) {
             ((TextView)item.description).setTextColor(dark);
         } else if (item.description instanceof IncDecDescription){
@@ -105,68 +56,15 @@ public class InfoGrid extends GridLayout {
             incDec.text.setTextColor(dark);
         }
 
-        updateSize(item);
-
         rows.add(item);
+        addView(item);
+        LayoutParams params = (LayoutParams)item.getLayoutParams();
+        params.width = LayoutParams.MATCH_PARENT;
+        item.setLayoutParams(params);
+
+
+
         return item;
-    }
-    public void updateSize(Item item){
-        ViewGroup.LayoutParams params;
-
-        params = item.middleSpace.getLayoutParams();
-        params.width = (int)(spaceWidth * dim);
-        params.height = (int) (spaceHeight * dim);
-        item.middleSpace.setLayoutParams(params);
-
-        params = item.startSpace.getLayoutParams();
-        params.width = (int)(0.7f * spaceWidth * dim);
-        params.height = (int)(spaceHeight * dim);
-        item.startSpace.setLayoutParams(params);
-
-        params = item.endSpace.getLayoutParams();
-        params.width = (int)(spaceWidth * dim);
-        params.height = (int)(spaceHeight * dim);
-        item.endSpace.setLayoutParams(params);
-
-        if (item.image instanceof DrawnButton) {
-            params = (LayoutParams) item.image.getLayoutParams();
-            params.width = (int) dim;
-            params.height = (int) dim;
-            item.image.setLayoutParams(params);
-        } else if (item.image instanceof CounterView) {
-            params = item.image.getLayoutParams();
-            params.width = (int)((dim - DrawNumberUtil.PREFERRED_SEPARATION)
-                    * DrawNumberUtil.PREFERRED_ASPECT_RATIO + DrawNumberUtil.PREFERRED_SEPARATION);
-            params.height = (int)dim;
-            item.image.setLayoutParams(params);
-        }
-
-        if (item.description instanceof TextView) {
-            ((TextView) item.description).setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-        } else if (item.description instanceof IncDecDescription){
-            IncDecDescription incDec = (IncDecDescription)item.description;
-            incDec.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-
-            params = incDec.incButton.getLayoutParams();
-            params.width = (int)dim;
-            params.height = (int)dim;
-            incDec.incButton.setLayoutParams(params);
-
-            params = incDec.decButton.getLayoutParams();
-            params.width = (int)dim;
-            params.height = (int)dim;
-            incDec.decButton.setLayoutParams(params);
-
-            params = incDec.incSpace.getLayoutParams();
-            params.width = (int)(0.1f * spaceWidth * dim);
-            params.height = (int)dim;
-            incDec.incSpace.setLayoutParams(params);
-
-            params = incDec.decSpace.getLayoutParams();
-            params.width = (int)(0.5f * spaceWidth * dim);
-            params.height = (int)dim;
-            incDec.decSpace.setLayoutParams(params);
-        }
     }
     public Item addItem(DrawImage upImage, DrawImage downImage, boolean isUp, String text,
                         OnClickListener listener) {
@@ -206,51 +104,138 @@ public class InfoGrid extends GridLayout {
         return addItem(new Item(image, description, ctxt));
     }
 
+    int dim;
     public void onSizeChanged(int w, int h, int oldW, int oldH){
-        dim = w / 10f;
-        ViewGroup.LayoutParams params = topSpace.getLayoutParams();
-        params.width = (int)(spaceWidth*dim);
-        params.height = (int)((spaceHeight-1)*dim);
-        topSpace.setLayoutParams(params);
-        params = bottomSpace.getLayoutParams();
-        params.width = (int)(spaceWidth*dim);
-        params.height = (int)((spaceHeight-1)*dim);
-        bottomSpace.setLayoutParams(params);
-        for (Item item : rows){
-            updateSize(item);
-        }
+        dim = w / 10;
     }
 
-    public static class Item {
+    public class Item extends LinearLayoutReorder {
         public View image;
         public View description;
-        public Space middleSpace;
-        public Space startSpace;
-        public Space endSpace;
+        public View left;
+        public View middle;
+        public View right;
+        public View farRight;
 
         public Item(final View image, View description, OnClickListener listener, Context ctxt) {
+            super(ctxt);
             image.setOnClickListener(listener);
             constructor(image, description, ctxt);
         }
+
         public Item(final View image, View description, Context ctxt) {
+            super(ctxt);
             constructor(image, description, ctxt);
         }
-        protected void constructor(final View image, View description, Context ctxt){
+
+        protected void constructor(final View image, View description, Context ctxt) {
             this.image = image;
             this.description = description;
-            this.middleSpace = new Space(ctxt, null);
-            this.startSpace = new Space(ctxt, null);
-            this.endSpace = new Space(ctxt, null);
+            this.left = new View(ctxt);
+            this.middle = new View(ctxt);
+            this.right = new View(ctxt);
+            this.farRight = new View(ctxt);
+            setOrientation(HORIZONTAL);
+            setDividerDrawable(getResources().getDrawable(R.drawable.infogrid_vertical_divider));
+
+            setVerticalGravity(Gravity.CENTER_VERTICAL);
+
+            addView(left);
+            addView(image);
+            addView(middle);
+            addView(description);
+            addView(right);
+            addView(farRight);
             OnClickListener l = v -> image.callOnClick();
             description.setOnClickListener(l);
-            middleSpace.setOnClickListener(l);
-            startSpace.setOnClickListener(l);
-            endSpace.setOnClickListener(l);
+            left.setOnClickListener(l);
+            middle.setOnClickListener(l);
+            right.setOnClickListener(l);
+            farRight.setOnClickListener(l);
+
+            View[] measureOrder = new View[6];
+            measureOrder[0] = left;
+            measureOrder[1] = image;
+            measureOrder[2] = middle;
+            measureOrder[3] = right;
+            measureOrder[4] = description;
+            measureOrder[5] = farRight;
+            setMeasureOrder(measureOrder);
+            View[] displayOrder = new View[6];
+            displayOrder[0] = left;
+            displayOrder[1] = image;
+            displayOrder[2] = middle;
+            displayOrder[3] = description;
+            displayOrder[4] = right;
+            displayOrder[5] = farRight;
+            setDisplayOrder(displayOrder);
+
+            updateSize();
         }
 
+        public void updateSize() {
+            int space = dim / 5;
+            LinearLayout.LayoutParams params;
+
+            if (image instanceof DrawnButton) {
+                params = (LinearLayout.LayoutParams) image.getLayoutParams();
+                params.width = dim;
+                params.height = dim;
+                image.setLayoutParams(params);
+
+                params = (LinearLayout.LayoutParams) left.getLayoutParams();
+                params.width = space;
+                params.height = LayoutParams.MATCH_PARENT;
+                left.setLayoutParams(params);
+
+                params = (LinearLayout.LayoutParams) middle.getLayoutParams();
+                params.width = space;
+                params.height = LayoutParams.MATCH_PARENT;
+                middle.setLayoutParams(params);
+            } else if (image instanceof CounterView) {
+                int counterWidth = (int)((dim - DrawNumberUtil.PREFERRED_SEPARATION)
+                        * DrawNumberUtil.PREFERRED_ASPECT_RATIO + DrawNumberUtil.PREFERRED_SEPARATION);
+                params = (LinearLayout.LayoutParams) image.getLayoutParams();
+                params.width = counterWidth;
+                params.height = dim;
+                image.setLayoutParams(params);
+
+                params = (LinearLayout.LayoutParams) left.getLayoutParams();
+                params.width = space + (dim-counterWidth)/2;
+                params.height = LayoutParams.MATCH_PARENT;
+                left.setLayoutParams(params);
+
+                params = (LinearLayout.LayoutParams) middle.getLayoutParams();
+                params.width = space + (dim-counterWidth)/2;
+                params.height = LayoutParams.MATCH_PARENT;
+                middle.setLayoutParams(params);
+            }
+
+            if (description instanceof TextView) {
+                ((TextView) description).setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+            } else if (description instanceof IncDecDescription) {
+                ((IncDecDescription) description).text.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+            }
+
+            params = (LinearLayout.LayoutParams) right.getLayoutParams();
+            params.width = space;
+            params.height = LayoutParams.MATCH_PARENT;
+            right.setLayoutParams(params);
+
+            params = (LinearLayout.LayoutParams) farRight.getLayoutParams();
+            params.width = LayoutParams.WRAP_CONTENT;
+            params.height = LayoutParams.MATCH_PARENT;
+            farRight.setLayoutParams(params);
+
+        }
+
+        public void onSizeChanged(int w, int h, int oldW, int oldH) {
+            updateSize();
+            post(() -> requestLayout());
+        }
     }
 
-    public static class IncDecDescription extends LinearLayoutReorder{
+    public class IncDecDescription extends LinearLayoutReorder{
         public DrawnButton incButton;
         public DrawnButton decButton;
         public TextView text;
@@ -287,20 +272,48 @@ public class InfoGrid extends GridLayout {
             update();
         }
 
+        public void onSizeChanged(int w, int h, int oldW, int oldH) {
+            LinearLayout.LayoutParams params;
+
+            params = (LinearLayout.LayoutParams) incButton.getLayoutParams();
+            params.width = dim;
+            params.height = dim;
+            incButton.setLayoutParams(params);
+
+            params = (LinearLayout.LayoutParams) decButton.getLayoutParams();
+            params.width = dim;
+            params.height = dim;
+            decButton.setLayoutParams(params);
+
+            params = (LinearLayout.LayoutParams) incSpace.getLayoutParams();
+            params.width = dim / 5;
+            params.height = LayoutParams.MATCH_PARENT;
+            incSpace.setLayoutParams(params);
+
+            params = (LinearLayout.LayoutParams) decSpace.getLayoutParams();
+            params.width = dim / 5;
+            params.height = LayoutParams.MATCH_PARENT;
+            decSpace.setLayoutParams(params);
+        }
+
         public void update(){
-            measureOrder = new View[5];
-            displayOrder = new View[5];
-            measureOrder[4] = text;
-            displayOrder[2] = text;
-            measureOrder[1] = incButton;
-            displayOrder[4] = incButton;
+            View[] measureOrder = new View[5];
             measureOrder[0] = decButton;
-            displayOrder[0] = decButton;
+            measureOrder[1] = decSpace;
             measureOrder[2] = incSpace;
-            displayOrder[3] = incSpace;
-            measureOrder[3] = decSpace;
+            measureOrder[3] = incButton;
+            measureOrder[4] = text;
+            setMeasureOrder(measureOrder);
+            View[] displayOrder = new View[5];
+            displayOrder[0] = decButton;
             displayOrder[1] = decSpace;
+            displayOrder[2] = text;
+            displayOrder[3] = incSpace;
+            displayOrder[4] = incButton;
+            setDisplayOrder(displayOrder);
         }
     }
 
 }
+
+

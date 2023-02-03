@@ -27,12 +27,11 @@ import com.nahollenbaugh.mines.drawing.DrawBack;
 import com.nahollenbaugh.mines.drawing.DrawInfo;
 import com.nahollenbaugh.mines.drawing.DrawSettings;
 import com.nahollenbaugh.mines.t.SimpleSettingsManager;
-import com.nahollenbaugh.mines.views.InfoDialog;
+import com.nahollenbaugh.mines.dialogs.InfoDialog;
 import com.nahollenbaugh.mines.dialogs.SettingsDialog;
 
 import static com.nahollenbaugh.mines.storage.StoredDataStrings.*;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
@@ -145,7 +144,7 @@ public class ScoresFragment extends Fragment {
                                 .navigate(action);
                     }).show(getParentFragmentManager(), null);
                 }
-            }).show(true,true,true,
+            }).show(true,true,true,true,
                     true, true, true, false,
                     true, false, true, true,
                     false);

@@ -22,7 +22,7 @@ import com.nahollenbaugh.mines.drawing.DrawSettings;
 import com.nahollenbaugh.mines.gamelogic.GameData;
 import com.nahollenbaugh.mines.storage.StoreGame;
 import com.nahollenbaugh.mines.t.SimpleSettingsManager;
-import com.nahollenbaugh.mines.views.InfoDialog;
+import com.nahollenbaugh.mines.dialogs.InfoDialog;
 import com.nahollenbaugh.mines.dialogs.SettingsDialog;
 
 public class MenuFragment extends Fragment {
@@ -172,7 +172,7 @@ public class MenuFragment extends Fragment {
                                 .navigate(action);
                     }).show();
                 }
-            }).show(true,true,true,
+            }).show(true,true,true,true,
                     true,true,true,false,
                     true,false,true,true,false);
         });

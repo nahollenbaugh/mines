@@ -337,7 +337,7 @@ public class GameView extends ZoomableView{
         }
         return Color.YELLOW;
     }
-    protected static int numberColor(int state){
+    public static int numberColor(int state){
         switch(state & Game.NUMBER_MASK){
             case 1: return number_blue;
             case 2: return number_green;
